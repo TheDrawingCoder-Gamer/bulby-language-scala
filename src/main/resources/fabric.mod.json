@@ -1,16 +1,16 @@
 {
   "schemaVersion": 1,
   "id": "bulby-language-scala",
-  "name": "Krysztal's Language Scala",
-  "description": "Krysztal's fork of fabric language module for Scala.",
+  "name": "Bulby's Language Scala",
+  "description": "Bulby's fork of fabric language module for Scala.",
   "version": "${version}",
   "license": "Apache License",
   "languageAdapters": {
     "scala": "net.fabricmc.language.scala.ScalaLanguageAdapter"
   },
   "contact": {
-    "sources": "https://github.com/Krysztal112233/krysztal-language-scala",
-    "issues": "https://github.com/Krysztal112233/krysztal-language-scala/issues"
+    "sources": "https://github.com/TheDrawingCoder-Gamer/bulby-language-scala",
+    "issues": "https://github.com/TheDrawingCoder-Gamer/bulby-language-scala/issues"
   },
   "environment": "*",
   "icon": "assets/icon.png",
