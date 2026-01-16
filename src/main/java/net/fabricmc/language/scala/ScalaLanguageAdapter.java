@@ -1,6 +1,7 @@
 package net.fabricmc.language.scala;
 
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -14,15 +15,15 @@ public class ScalaLanguageAdapter implements LanguageAdapter {
 	@Override
 	@SneakyThrows
 	public <T> T create(ModContainer mod, String value, Class<T> type) {
-		log.debug("Constructing for scala mod %s.".formatted(mod.getMetadata().getId()));
+		log.debug(String.format("Constructing for scala mod %s.", mod.getMetadata().getId()));
 
-		for (String val : Stream.of(value, value + "$").toList()) {
-			var container = getScalaObject(mod, val, type);
+		for (String val : Stream.of(value, value + "$").collect(Collectors.toList())) {
+			Optional<T> container = getScalaObject(mod, val, type);
 			if (container.isPresent())
 				return container.get();
 		}
 
-		throw new LanguageAdapterException("Unable to instantiate mod %s.".formatted(mod));
+		throw new LanguageAdapterException(String.format("Unable to instantiate mod %s.", mod));
 	}
 
 	@SneakyThrows
@@ -30,10 +31,10 @@ public class ScalaLanguageAdapter implements LanguageAdapter {
 	private <T> Optional<T> getScalaObject(ModContainer mod, String value, Class<T> type) {
 		Object obj = null;
 		try {
-			var clazz = Class.forName(value, true, ScalaLanguageAdapter.class.getClassLoader());
+			Class<?> clazz = Class.forName(value, true, ScalaLanguageAdapter.class.getClassLoader());
 			obj = clazz.getField("MODULE$").get(null);
 		} catch (NoSuchFieldException | ClassNotFoundException e) {
-			log.debug("Reflecting failed for `%s`: %s".formatted(value, e));
+			log.debug(String.format("Reflecting failed for `%s`: %s", value, e));
 			return Optional.empty();
 		}
 
@@ -41,7 +42,7 @@ public class ScalaLanguageAdapter implements LanguageAdapter {
 		try {
 			container = Optional.of((T) obj);
 		} catch (ClassCastException e) {
-			log.warn("Failed to cast object of `%s` into type `%s`: %s".formatted(obj, type, e));
+			log.warn(String.format("Failed to cast object of `%s` into type `%s`: %s", obj, type, e));
 		}
 		return container;
 	}

@@ -1,21 +1,19 @@
-import java.lang.System
-
 plugins {
 	id "me.modmuss50.mod-publish-plugin" version "1.1.0"
 	id 'fabric-loom' version "${loom_version}"
-	id 'java-library'
 	id 'maven-publish'
 	id 'scala'
 	id "com.diffplug.spotless" version "7.0.4"
-	id 'groovy'
 }
 
 base {
 	archivesName = project.archives_base_name
 }
 
+def ENV = System.getenv()
+
 group = project.maven_group
-def detected_scala_version = System.getenv("SCALA3_VERSION")==null ? project.scala_version: System.getenv("SCALA3_VERSION")
+def detected_scala_version = ENV.SCALA3_VERSION ?: project.scala_version
 version = mod_version + "+scala." + detected_scala_version
 
 System.out.println("Building with Scala3: ${detected_scala_version}")
@@ -42,23 +40,25 @@ processResources {
 }
 
 tasks.withType(JavaCompile).configureEach {
-	it.options.release = 17
+	it.options.release = 8
 }
 
 java {
 	withSourcesJar()
 
-	sourceCompatibility = JavaVersion.VERSION_17
-	targetCompatibility = JavaVersion.VERSION_17
+	sourceCompatibility = JavaVersion.VERSION_1_8
+	targetCompatibility = JavaVersion.VERSION_1_8
 }
 
 jar {
+
 	inputs.property "archivesName", project.base.archivesName
 
 	from("LICENSE") {
 		rename { "${it}_${inputs.properties.archivesName}"}
 	}
 }
+
 
 tasks.withType(GenerateModuleMetadata).configureEach {
 	enabled = false
@@ -76,12 +76,12 @@ publishing {
 	}
 
 	repositories {
-		if (System.getenv('MAVEN_URL')) {
+		if (ENV.MAVEN_URL) {
 			maven {
-				url System.getenv('MAVEN_URL')
+				url ENV.MAVEN_URL
 				credentials {
-					username System.getenv('MAVEN_USERNAME')
-					password System.getenv('MAVEN_PASSWORD')
+					username ENV.MAVEN_USERNAME
+					password ENV.MAVEN_PASSWORD
 				}
 			}
 		}
@@ -89,9 +89,6 @@ publishing {
 }
 
 spotless {
-	groovy {
-		greclipse()
-	}
 
 	groovyGradle {
 		target '*.gradle'
@@ -114,7 +111,7 @@ publishMods {
 
 	modrinth {
 		minecraftVersionRange {
-			start = "1.21"
+			start = "1.14"
 			end = "latest"
 			includeSnapshots = true
 		}
@@ -123,7 +120,7 @@ publishMods {
 	}
 
 	github {
-		repository = "Krysztal112233/krysztal-language-scala"
+		repository = "TheDrawingCoder-Gamer/bulby-language-scala"
 		accessToken = providers.environmentVariable("GITHUB_TOKEN")
 		commitish = "krysztal"
 		tagName = version

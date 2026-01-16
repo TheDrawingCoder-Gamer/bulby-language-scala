@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "krysztal-language-scala",
+  "id": "bulby-language-scala",
   "name": "Krysztal's Language Scala",
   "description": "Krysztal's fork of fabric language module for Scala.",
   "version": "${version}",
@@ -15,6 +15,11 @@
   "environment": "*",
   "icon": "assets/icon.png",
   "conflicts": {
-    "fabric-language-scala": "*"
-  }
+    "fabric-language-scala": "*",
+    "krysztal-language-scala": "*"
+  },
+  "provides": [
+    "fabric-language-scala",
+    "krysztal-language-scala"
+  ]
 }
